@@ -12,11 +12,11 @@ public class AdaptiveGigaBiba : MonoBehaviour
     public float obstacleDetectionDistance = 2f;
     public float rainDetectionDistance = 10f;
     public float vehicleDetectionRadius = 5f;
-    public float avoidanceDistance = 5f; // Расстояние для обхода препятствий
+    public float avoidanceDistance = 5f; 
     private NavMeshAgent agent;
     private int currentWaypointIndex = 0;
-    private int obstacleAvoidanceAttempts = 0; // Счетчик попыток обхода препятствий
-    private const int maxAvoidanceAttempts = 3; // Максимальное количество попыток обхода
+    private int obstacleAvoidanceAttempts = 0; 
+    private const int maxAvoidanceAttempts = 3; 
 
     void Start()
     {
@@ -31,7 +31,7 @@ public class AdaptiveGigaBiba : MonoBehaviour
         AvoidObstacles();
         ReactToEnvironment();
 
-        // Переход к следующей точке если NPC достиг текущей
+        
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             GoToNextWaypoint();
@@ -102,12 +102,12 @@ public class AdaptiveGigaBiba : MonoBehaviour
         obstacleAvoidanceAttempts++;
         if (obstacleAvoidanceAttempts > maxAvoidanceAttempts)
         {
-            Debug.Log("NPC не смог обойти препятствие после нескольких попыток.");
-            GoToNextWaypoint(); // Если много попыток, двигаемся к следующей точке
+            Debug.Log();
+            GoToNextWaypoint();
             return;
         }
 
-        // Вычисляем новое направление для обхода препятствия
+        
         Vector3 avoidanceDirection = Vector3.Cross(hit.normal, Vector3.up).normalized;
         Vector3 newDestination = hit.point + avoidanceDirection * avoidanceDistance;
 
@@ -119,16 +119,14 @@ public class AdaptiveGigaBiba : MonoBehaviour
         NavMeshHit navHit;
         if (NavMesh.SamplePosition(destination, out navHit, 1.0f, NavMesh.AllAreas))
         {
-            // Проверяем, есть ли препятствие по пути
             if (!NavMesh.Raycast(transform.position, navHit.position, out NavMeshHit obstacleHit, NavMesh.AllAreas))
             {
                 agent.SetDestination(navHit.position);
-                obstacleAvoidanceAttempts = 0; // Сбрасываем количество попыток
+                obstacleAvoidanceAttempts = 0;
                 return;
             }
         }
 
-        // Если путь закрыт, выбираем случайное направление и пробуем снова
         Vector3 randomDirection = Random.insideUnitSphere * 4f;
         NavMesh.SamplePosition(transform.position + randomDirection, out navHit, 3.0f, NavMesh.AllAreas);
 
@@ -142,11 +140,11 @@ public class AdaptiveGigaBiba : MonoBehaviour
     {
         if (IsRaining())
         {
-            agent.speed = 6f; // Замедляем скорость при дожде
+            agent.speed = 6f;
         }
         else
         {
-            agent.speed = 3.5f; // Нормальная скорость
+            agent.speed = 3.5f;
         }
 
         AvoidVehicles();
